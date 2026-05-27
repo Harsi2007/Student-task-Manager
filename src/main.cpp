@@ -94,18 +94,33 @@ void viewByPriority() {
     if (count == 0) cout << "\nNo tasks with " << priority << " priority!" << endl;
     cout << endl;
 }
+void searchTask() {
+    string keyword;
+    cout << "Enter search keyword: ";
+    cin.ignore();
+    getline(cin, keyword);
+    int count = 0;
+    string sql = "SELECT * FROM tasks WHERE title LIKE '%" + keyword + "%';";
+    sqlite3_exec(db, sql.c_str(), printRow, &count, 0);
+    if (count == 0) cout << "\nNo tasks found!" << endl;
+    cout << endl;
+}
 int main() {
     openDB();
     int choice;
     do {
-        cout << "\n===== TASK MANAGER =====";
-        cout << "\n1. Add task";
-        cout << "\n2. View all tasks";
-        cout << "\n3. Mark task done";
-        cout << "\n4. Delete task";
-        cout << "\n5. View Pending Tasks";
-        cout << "\n6. View by Priority";
-        cout << "\n7. Exit";
+        cout << "\n========================";
+        cout << "\n     TASK MANAGER       ";
+        cout << "\n========================";
+        cout << "\n 1. Add task";
+        cout << "\n 2. View all tasks";
+        cout << "\n 3. Mark task done";
+        cout << "\n 4. Delete task";
+        cout << "\n 5. View pending tasks";
+        cout << "\n 6. View by priority";
+        cout << "\n 7. Search task";
+        cout << "\n 8. Exit";
+        cout << "\n========================";
         cout << "\nChoose: ";
         cin >> choice;
         if (cin.fail()) {
@@ -119,12 +134,13 @@ int main() {
             case 2: viewAllTasks(); break;
             case 3: markDone(); break;
             case 4: deleteTask(); break;
-            case 5: viewPending(); break;
+            case 5: viewPending(); break; 
             case 6: viewByPriority(); break;
-            case 7: cout << "Bye!" << endl; break;
+            case 7: searchTask(); break;
+            case 8: cout << "Bye!" << endl; break;
             default: cout << "Invalid choice!" << endl;
         }
-    } while (choice != 7);
+    } while (choice != 8);
 
     sqlite3_close(db);
     return 0;
