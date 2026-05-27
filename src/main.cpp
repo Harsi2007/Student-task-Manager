@@ -19,6 +19,8 @@ void openDB() {
     sqlite3_exec(db, sql.c_str(), 0, 0, 0);
 }
 static int printRow(void* data, int argc, char** argv, char** colName) {
+    int* count = (int*)data;
+    (*count)++;
     cout << "\nID: " << argv[0];
     cout << "\nTitle: " << argv[1];
     cout << "\nDue Date: " << argv[2];
@@ -50,8 +52,10 @@ void addTask() {
 }
 void viewAllTasks() {
     cout << "\n===== ALL TASKS =====";
+    int count = 0;
     string sql = "SELECT * FROM tasks;";
-    sqlite3_exec(db, sql.c_str(), printRow, 0, 0);
+    sqlite3_exec(db, sql.c_str(), printRow, &count, 0);
+    if (count == 0) cout << "\nNo tasks found!" << endl;
     cout << endl;
 }
 void deleteTask() {
@@ -72,8 +76,10 @@ void markDone() {
 }
 void viewPending() {
     cout << "\n===== PENDING TASKS =====";
+    int count = 0;
     string sql = "SELECT * FROM tasks WHERE status = 'Pending';";
-    sqlite3_exec(db, sql.c_str(), printRow, 0, 0);
+    sqlite3_exec(db, sql.c_str(), printRow, &count, 0);
+    if (count == 0) cout << "\nNo pending tasks!" << endl;
     cout << endl;
 }
 
@@ -82,8 +88,10 @@ void viewByPriority() {
     cout << "Enter priority (High/Medium/Low): ";
     cin.ignore();
     getline(cin, priority);
+    int count = 0;
     string sql = "SELECT * FROM tasks WHERE priority = '" + priority + "';";
-    sqlite3_exec(db, sql.c_str(), printRow, 0, 0);
+    sqlite3_exec(db, sql.c_str(), printRow, &count, 0);
+    if (count == 0) cout << "\nNo tasks with " << priority << " priority!" << endl;
     cout << endl;
 }
 int main() {
@@ -100,6 +108,11 @@ int main() {
         cout << "\n7. Exit";
         cout << "\nChoose: ";
         cin >> choice;
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            choice = 0;
+        }
 
         switch (choice) {
             case 1: addTask(); break;
