@@ -36,7 +36,7 @@ void addTask() {
     cin.ignore();
     getline(cin, title);
 
-    cout << "Enter due date (e.g. 2026-06-01): ";
+    cout << "Enter due date (eg: yyyy-mm-dd): ";
     getline(cin, dueDate);
 
     cout << "Enter priority (High/Medium/Low): ";
@@ -70,6 +70,22 @@ void markDone() {
     sqlite3_exec(db, sql.c_str(), 0, 0, 0);
     cout << "Task marked as done!" << endl;
 }
+void viewPending() {
+    cout << "\n===== PENDING TASKS =====";
+    string sql = "SELECT * FROM tasks WHERE status = 'Pending';";
+    sqlite3_exec(db, sql.c_str(), printRow, 0, 0);
+    cout << endl;
+}
+
+void viewByPriority() {
+    string priority;
+    cout << "Enter priority (High/Medium/Low): ";
+    cin.ignore();
+    getline(cin, priority);
+    string sql = "SELECT * FROM tasks WHERE priority = '" + priority + "';";
+    sqlite3_exec(db, sql.c_str(), printRow, 0, 0);
+    cout << endl;
+}
 int main() {
     openDB();
     int choice;
@@ -79,7 +95,9 @@ int main() {
         cout << "\n2. View all tasks";
         cout << "\n3. Mark task done";
         cout << "\n4. Delete task";
-        cout << "\n5. Exit";
+        cout << "\n5. View Pending Tasks";
+        cout << "\n6. View by Priority";
+        cout << "\n7. Exit";
         cout << "\nChoose: ";
         cin >> choice;
 
@@ -88,10 +106,12 @@ int main() {
             case 2: viewAllTasks(); break;
             case 3: markDone(); break;
             case 4: deleteTask(); break;
-            case 5: cout << "Bye!" << endl; break;
+            case 5: viewPending(); break;
+            case 6: viewByPriority(); break;
+            case 7: cout << "Bye!" << endl; break;
             default: cout << "Invalid choice!" << endl;
         }
-    } while (choice != 5);
+    } while (choice != 7);
 
     sqlite3_close(db);
     return 0;
