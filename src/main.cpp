@@ -68,7 +68,11 @@ void deleteTask() {
     cin >> id;
     string sql = "DELETE FROM tasks WHERE id = " + to_string(id) + ";";
     sqlite3_exec(db, sql.c_str(), 0, 0, 0);
-    cout << "Task deleted!" << endl;
+    if (sqlite3_changes(db) == 0) {
+        cout << "No task found with ID " << id << "!" << endl;
+    } else {
+        cout << "Task deleted!" << endl;
+    }
 }
 void markDone() {
     int id;
@@ -76,7 +80,11 @@ void markDone() {
     cin >> id;
     string sql = "UPDATE tasks SET status = 'Done' WHERE id = " + to_string(id) + ";";
     sqlite3_exec(db, sql.c_str(), 0, 0, 0);
-    cout << "Task marked as done!" << endl;
+    if (sqlite3_changes(db) == 0) {
+        cout << "No task found with ID " << id << "!" << endl;
+    } else {
+        cout << "Task marked as done!" << endl;
+    }
 }
 void viewPending() {
     cout << "\n===== PENDING TASKS =====";
