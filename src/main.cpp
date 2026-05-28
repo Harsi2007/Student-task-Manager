@@ -43,6 +43,10 @@ void addTask() {
 
     cout << "Enter priority (High/Medium/Low): ";
     getline(cin, priority);
+    priority[0] = toupper(priority[0]);
+    for (int i = 1; i < priority.length(); i++) {
+        priority[i] = tolower(priority[i]);
+    }
 
     string sql = "INSERT INTO tasks (title, due_date, priority) VALUES ('"
                  + title + "', '" + dueDate + "', '" + priority + "');";
@@ -88,6 +92,10 @@ void viewByPriority() {
     cout << "Enter priority (High/Medium/Low): ";
     cin.ignore();
     getline(cin, priority);
+    priority[0] = toupper(priority[0]);
+    for (int i = 1; i < priority.length(); i++) {
+        priority[i] = tolower(priority[i]);
+    }
     int count = 0;
     string sql = "SELECT * FROM tasks WHERE priority = '" + priority + "';";
     sqlite3_exec(db, sql.c_str(), printRow, &count, 0);
